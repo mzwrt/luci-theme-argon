@@ -38,7 +38,8 @@
 	function fetchMedia(path, themeDir) {
 		let backgroundTable = [];
 		for (f in (fs.lsdir(path))) {
-			let ext = lc(split(f, '.')?.[1]);
+			let parts = split(f, '.');
+			let ext = length(parts) > 1 ? lc(parts[length(parts) - 1]) : null;
 			if (ext && index(allTypes, " " + ext + " ") != -1) {
 				let bg = {};
 				bg.type = ext;
@@ -120,7 +121,7 @@
 			</a>
 			<!-- Logo End -->
 			<!-- Login Form Start -->
-			<form class="form-login" method="post" action="{{ http.getenv("REQUEST_URI") }}">
+			<form class="form-login" method="post" action="{{ entityencode(http.getenv('REQUEST_URI'), true) }}">
 
 				{%- if (fuser): %}
 				<div class="errorbox">{{ _('Invalid username and/or password! Please try again.') }}</div>

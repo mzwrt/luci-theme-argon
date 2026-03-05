@@ -240,7 +240,6 @@ return baseclass.extend({
 	 */
 	handleMenuExpand: function (ev) {
 		var target = ev.target;
-		var slide = target.parentNode;
 		var slideMenu = target.nextElementSibling;
 		var shouldCollapse = false;
 
@@ -267,13 +266,11 @@ return baseclass.extend({
 
 		// Open the submenu if it's not already open
 		if (!shouldCollapse) {
-			// Find the slide menu within the slide element
-			var slideMenuElement = slide.querySelector(".slide-menu");
-			if (slideMenuElement) {
+			if (slideMenu) {
 				// Add active classes immediately when starting slideDown animation
 				slideMenu.classList.add('active');
 				target.classList.add('active');
-				SlideAnimations.slideDown(slideMenuElement, 'fast');
+				SlideAnimations.slideDown(slideMenu, 'fast');
 			}
 			target.blur(); // Remove focus from the clicked element
 		}
@@ -316,10 +313,10 @@ return baseclass.extend({
 			// Determine CSS classes based on state
 			var slideClass = hasChildren ? 'slide' : null;
 			var menuClass = hasChildren ? 'menu' : 'food';
-			
+
 			if (isActive) {
 				menuContainer.classList.add('active');
-				slideClass += " active";
+				slideClass = slideClass ? slideClass + ' active' : 'active';
 				menuClass += " active";
 			}
 

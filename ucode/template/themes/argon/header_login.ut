@@ -90,7 +90,7 @@
 	<link rel="manifest" href="{{ media }}/icon/manifest.json" crossorigin="use-credentials">
 
 	<link rel="stylesheet" href="{{ media }}/css/cascade.css{# ?v=PKG_VERSION #}">
-	<style title="text/css">
+	<style>
 		{% if (mode == 'normal'): %}
 			@media (prefers-color-scheme: dark) {
 				{{ dark_css }}
@@ -110,12 +110,11 @@
 		}
 		{% endif -%}
 	</style>
-	<link rel="shortcut icon" href="{{ media }}/favicon.ico">
 	{% if (node?.css): %}
 	<link rel="stylesheet" href="{{ resource }}/{{ node.css}}">
 	{% endif -%}
 	{% if (css): %}
-	<style title="text/css">
+	<style>
 		{{ css }}
 	</style>
 	{% endif -%}
