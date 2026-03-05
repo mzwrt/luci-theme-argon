@@ -274,7 +274,7 @@ table > thead > tr > td {
     color: #ccc !important;
 }
 
-.node-system-packages > .main .cbi-section-node:first-child .cbi-value-last {
+[data-page="admin-system-packages"] > .main .cbi-section-node:first-child .cbi-value-last {
     line-height: 1.8em;
 
     div[style="margin:3px 0; width:300px; height:10px; border:1px solid #000000; background-color:#80C080"] {
@@ -516,7 +516,7 @@ textarea {
     background-color: #1e1e1e;
 }
 
-.node-system-packages > .main table tr td:nth-last-child(1) {
+[data-page="admin-system-packages"] > .main table tr td:nth-last-child(1) {
     color: #ccc;
 
 }
@@ -558,39 +558,39 @@ td.cbi-value-field var {
     background-color: #1e1e1e;
 }
 
-.node-services-vssr .block {
+[data-page^="admin-services-vssr"] .block {
     background-color: #3c3c3c !important;
     box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, .35);
 }
 
-.node-services-vssr .block h4 {
+[data-page^="admin-services-vssr"] .block h4 {
     color: #ccc !important;
 }
 
-.node-services-vssr .status-bar {
+[data-page^="admin-services-vssr"] .status-bar {
     color: #ccc;
     box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, .35);
     background-color: #1e1e1e;
 }
 
-.node-services-vssr .cbi-section-table-row {
+[data-page^="admin-services-vssr"] .cbi-section-table-row {
     color: #ccc;
     background-color: #3c3c3c !important;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, .35)
 }
 
-.node-services-vssr .cbi-section-table-row.fast {
+[data-page^="admin-services-vssr"] .cbi-section-table-row.fast {
     background: #483d8b !important;
     background: var(--dark-primary) !important;
     color: #fff;
 }
 
-.node-services-vssr .ssr-button {
+[data-page^="admin-services-vssr"] .ssr-button {
     color: #ccc;
 
 }
 
-.node-services-vssr .incon:nth-child(2) {
+[data-page^="admin-services-vssr"] .incon:nth-child(2) {
     border-right: #1e1e1e 1px solid;
 }
 
@@ -806,7 +806,7 @@ td > .ifacebadge,
 #cbi-wireless > .cbi-section-node,
 #cbi-wireless > #wifi_assoclist_table,
 [data-tab-title],
-[data-page^="admin-system-admin"]:not(.node-main-login) .cbi-map:not(#cbi-dropbear),
+[data-page^="admin-system-admin"] .cbi-map:not(#cbi-dropbear),
 [data-page="admin-system-opkg"] #maincontent > .container {
     background: #1e1e1e !important;
     box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.35);
@@ -998,7 +998,7 @@ input,
 
 
 @media screen and (max-width: 480px) {
-    .node-status-iptables > .main div > .cbi-map > form {
+    [data-page^="admin-status-iptables"] > .main div > .cbi-map > form {
         background-color: #1e1e1e;
         box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, .35);
     }
