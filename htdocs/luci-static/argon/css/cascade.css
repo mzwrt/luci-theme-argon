@@ -1436,7 +1436,7 @@ footer > a {
 #cbi-wireless > .cbi-section-node,
 #cbi-wireless > #wifi_assoclist_table,
 [data-tab-title],
-[data-page^="admin-system-admin"]:not(.node-main-login) .cbi-map:not(#cbi-dropbear),
+[data-page^="admin-system-admin"] .cbi-map:not(#cbi-dropbear),
 [data-page="admin-system-opkg"] #maincontent > .container {
   font-family: inherit;
   font-weight: normal;
@@ -1457,7 +1457,7 @@ footer > a {
 #cbi-wireless > .cbi-section-node:last-child,
 #cbi-wireless > #wifi_assoclist_table:last-child,
 [data-tab-title]:last-child,
-[data-page^="admin-system-admin"]:not(.node-main-login) .cbi-map:not(#cbi-dropbear):last-child,
+[data-page^="admin-system-admin"] .cbi-map:not(#cbi-dropbear):last-child,
 [data-page="admin-system-opkg"] #maincontent > .container:last-child {
   margin: 0;
   border: 0;
@@ -3829,8 +3829,8 @@ pre.command-output {
   padding-bottom: 0.6rem;
 }
 /* fix status */
-.node-status-overview > .main fieldset:nth-child(4) .td:nth-child(2),
-.node-status-processes > .main .table .tr .td:nth-child(3) {
+[data-page="admin-status-overview"] .main fieldset:nth-child(4) .td:nth-child(2),
+[data-page="admin-status-processes"] .main .table .tr .td:nth-child(3) {
   white-space: normal;
 }
 div[style*="display:grid;grid-template-columns:repeat"] {
@@ -3944,7 +3944,7 @@ div[style*="display:grid;grid-template-columns:repeat"] .ifacebox .ifacebox-body
   .cbi-input-textarea {
     font-size: small;
   }
-  .node-admin-status > .main fieldset li > a {
+  [data-page^="admin-status"] .main fieldset li > a {
     padding: 0.3rem 0.6rem;
   }
 }
@@ -4027,7 +4027,7 @@ div[style*="display:grid;grid-template-columns:repeat"] .ifacebox .ifacebox-body
     width: 0;
     margin: 0;
   }
-  .node-main-login > .main .cbi-value-title {
+  .login-page .cbi-value-title {
     text-align: left;
   }
   .cbi-value-title {
@@ -4234,10 +4234,7 @@ div[style*="display:grid;grid-template-columns:repeat"] .ifacebox .ifacebox-body
   body {
     overflow-x: hidden;
   }
-  .node-main-login .main .main-right #maincontent .container .cbi-map .cbi-section .cbi-section-node .cbi-value .cbi-value-field {
-    width: 16rem;
-  }
-  .node-main-login footer {
+  .login-page footer {
     display: none;
   }
   .tabs::-webkit-scrollbar,
