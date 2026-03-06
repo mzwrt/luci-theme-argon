@@ -124,10 +124,12 @@ jobs:
       - name: Inject current package source into SDK
         # Always runs so the build uses the code from this commit,
         # even when the SDK itself is restored from cache.
+        # rsync with --exclude=sdk avoids "cp into itself" since sdk/ lives
+        # inside $GITHUB_WORKSPACE.
         run: |
           rm -rf "sdk/package/${{ env.PACKAGE }}"
-          cp -r "$GITHUB_WORKSPACE" "sdk/package/${{ env.PACKAGE }}"
-          rm -rf "sdk/package/${{ env.PACKAGE }}/.git"
+          mkdir -p "sdk/package/${{ env.PACKAGE }}"
+          rsync -a --exclude='.git' --exclude='sdk' "$GITHUB_WORKSPACE/" "sdk/package/${{ env.PACKAGE }}/"
 
       - name: Configure
         run: |
