@@ -19,7 +19,6 @@
 {%
 	import { readfile, access } from 'fs';
 	import { cursor } from 'uci';
-	import { srand } from 'math';
 	import { getuid, getspnam } from 'luci.core';
 
 	const boardinfo = ubus.call("system", "board");
@@ -29,8 +28,6 @@
 
 	//send as HTML5
 	http.prepare_content('text/html; charset=UTF-8');
-
-	srand(+substr(reverse(time() + ""), 0, 8));
 
 	//Custom settings
 	let mode = 'normal';
@@ -91,7 +88,7 @@
 	<link rel="manifest" href="{{ media }}/icon/manifest.json" crossorigin="use-credentials">
 
 	<link rel="stylesheet" href="{{ media }}/css/cascade.css{# ?v=PKG_VERSION #}">
-	<style title="text/css">
+	<style>
 		{% if (mode == 'normal'): %}
 			@media (prefers-color-scheme: dark) {
 				{{ dark_css }}
@@ -116,7 +113,7 @@
 	<link rel="stylesheet" href="{{ resource }}/{{ node.css}}">
 	{% endif -%}
 	{% if (css): %}
-	<style title="text/css">
+	<style>
 		{{ css }}
 	</style>
 	{% endif -%}
@@ -126,7 +123,7 @@
 </head>
 
 <body
-	class="lang_{{ dispatcher.lang }} {{ node?.title ? ` - ${striptags(node.title)}` : '' }} {% if (ctx.authsession): %}logged-in{% endif %}"
+	class="lang_{{ dispatcher.lang }}{% if (ctx.authsession): %} logged-in{% endif %}"
 	data-page="{{ entityencode(join('-', ctx.request_path), true) }}">
 
 	<div class="main">
