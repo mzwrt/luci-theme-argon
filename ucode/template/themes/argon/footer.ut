@@ -58,6 +58,42 @@
 		if (!temp || body.getAttribute('data-page') !== 'admin-status-overview') return;
 
 		var injected = false;
+		var tempValueCell = null;
+		var pollInterval = null;
+
+		function formatTemp(raw) {
+			var val = parseInt(raw, 10);
+			if (isNaN(val) || val <= 0) return '';
+			if (val > 1000) return (val / 1000).toFixed(1) + '\u00b0C';
+			if (val <= 200) return val + '\u00b0C';
+			return '';
+		}
+
+		function refreshTemp() {
+			if (!tempValueCell) return;
+			var sessionId = (typeof L !== 'undefined' && L.env && L.env.sessionid)
+				? L.env.sessionid : null;
+			if (!sessionId) return;
+			fetch('/ubus', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'call',
+					params: [sessionId, 'luci.argon_temp', 'get_temp', {}]
+				})
+			})
+			.then(function (r) { return r.json(); })
+			.then(function (data) {
+				if (data && data.result && data.result[0] === 0 &&
+						data.result[1] && data.result[1].temp) {
+					var formatted = formatTemp(data.result[1].temp);
+					if (formatted) tempValueCell.textContent = formatted;
+				}
+			})
+			.catch(function () {});
+		}
 
 		function injectTempRow() {
 			if (injected) return true;
@@ -76,13 +112,16 @@
 			labelCell.className = 'td left width-20';
 			labelCell.textContent = (typeof _ === 'function') ? _('Temperature') : 'Temperature';
 
-			var valueCell = document.createElement('td');
-			valueCell.className = 'td';
-			valueCell.textContent = temp;
+			tempValueCell = document.createElement('td');
+			tempValueCell.className = 'td';
+			tempValueCell.textContent = temp;
 
 			row.appendChild(labelCell);
-			row.appendChild(valueCell);
+			row.appendChild(tempValueCell);
 			table.appendChild(row);
+
+			if (pollInterval) clearInterval(pollInterval);
+			pollInterval = setInterval(refreshTemp, 5000);
 			return true;
 		}
 
