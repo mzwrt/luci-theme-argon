@@ -149,7 +149,8 @@
 
 <body
 	class="lang_{{ dispatcher.lang }}{% if (ctx.authsession): %} logged-in{% endif %}"
-	data-page="{{ entityencode(join('-', ctx.request_path), true) }}">
+	data-page="{{ entityencode(join('-', ctx.request_path), true) }}"
+	{% if (temp): %}data-argon-temp="{{ entityencode(temp, true) }}"{% endif %}>
 
 	<div class="main">
 		<div class="main-left" id="mainmenu" style="display:none">
@@ -176,7 +177,7 @@
 							<a class="showSide"></a>
 							<a class="brand" href="#">{{ hostname }}</a>
 						</div>
-						<div class="status" id="indicators">{% if (temp): %}<span class="temp-info" data-style="inactive">{{ temp }}</span>{% endif %}</div>
+						<div class="status" id="indicators"></div>
 					</div>
 				</div>
 			</header>

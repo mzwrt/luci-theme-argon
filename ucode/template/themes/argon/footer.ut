@@ -51,5 +51,63 @@
 	});
 </script>
 <script type="text/javascript">L.require('menu-argon')</script>
+<script>
+	(function () {
+		var body = document.body;
+		var temp = body.getAttribute('data-argon-temp');
+		if (!temp || body.getAttribute('data-page') !== 'admin-status-overview') return;
+
+		var injected = false;
+
+		function injectTempRow() {
+			if (injected) return true;
+			var sections = document.querySelectorAll('#view .cbi-section');
+			if (!sections.length) return false;
+			var table = sections[0].querySelector('.table');
+			if (!table || !table.querySelector('.tr')) return false;
+
+			injected = true;
+
+			var row = document.createElement('div');
+			row.className = 'tr';
+
+			/* LuCI overview uses td elements with class "td" inside div.tr rows */
+			var labelCell = document.createElement('td');
+			labelCell.className = 'td left width-20';
+			labelCell.textContent = (typeof _ === 'function') ? _('Temperature') : 'Temperature';
+
+			var valueCell = document.createElement('td');
+			valueCell.className = 'td';
+			valueCell.textContent = temp;
+
+			row.appendChild(labelCell);
+			row.appendChild(valueCell);
+			table.appendChild(row);
+			return true;
+		}
+
+		function observeView(view) {
+			var observer = new MutationObserver(function () {
+				if (injectTempRow()) observer.disconnect();
+			});
+			observer.observe(view, { childList: true, subtree: true });
+			injectTempRow();
+		}
+
+		var view = document.getElementById('view');
+		if (view) {
+			observeView(view);
+		} else {
+			var bodyObserver = new MutationObserver(function () {
+				var v = document.getElementById('view');
+				if (v) {
+					bodyObserver.disconnect();
+					observeView(v);
+				}
+			});
+			bodyObserver.observe(body, { childList: true });
+		}
+	})();
+</script>
 </body>
 </html>
