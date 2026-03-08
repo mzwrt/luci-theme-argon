@@ -39,7 +39,7 @@ env:
   # and bump SDK_CACHE_KEY suffix to bust the cache (e.g. feeds-v2).
   SDK_URL: https://archive.openwrt.org/releases/24.10.0/targets/x86/64/openwrt-sdk-24.10.0-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
   # Change the suffix (e.g. v2, v3) to force a fresh SDK + feeds download
-  SDK_CACHE_KEY: openwrt-sdk-24.10.0-x86-64-feeds-v1
+  SDK_CACHE_KEY: openwrt-sdk-24.10.0-x86-64-feeds-v2
 
 jobs:
   # ── Job 1: read version from Makefile and decide whether to build ──────────
