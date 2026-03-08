@@ -20,7 +20,7 @@ WRLOCK="/var/lock/argon_${WEB_PIC_SRC}.lock"
 fetch_pic_url() {
 	case "$WEB_PIC_SRC" in
 	bing)
-		local picpath="$(wget -T3 -qO- \
+		local picpath="$(uclient-fetch -T 3 -q -O - \
 			"https://www.bing.com/HPImageArchive.aspx?format=js&n=1" |
 			jsonfilter -qe '@.images[0].url' |
 			sed 's/1920x1080/UHD/g')"
@@ -28,30 +28,30 @@ fetch_pic_url() {
 		;;
 	unsplash)
 		if [ -z "$API_KEY" ]; then
-			local pic_id="$(wget -T3 --spider \
+			local pic_id="$(uclient-fetch -T 3 -O /dev/null \
 				"https://source.unsplash.com/1920x1080/daily?wallpapers" 2>&1 |
 				grep -Eo "photo-\w+-\w+" | head -n1)"
 			[ -n "${pic_id}" ] && echo "https://images.unsplash.com/${pic_id}?fm=jpg&fit=crop&w=1920&h=1080"
 		else
-			wget -T3 -qO- "https://api.unsplash.com/photos/random?client_id=${API_KEY}" |
+			uclient-fetch -T 3 -q -O - "https://api.unsplash.com/photos/random?client_id=${API_KEY}" |
 				jsonfilter -qe '@["urls"]["regular"]'
 		fi
 		;;
 	unsplash_*)
 		local collection_id="${WEB_PIC_SRC#unsplash_}"
 		if [ -z "$API_KEY" ]; then
-			local pic_id="$(wget -T3 --spider \
+			local pic_id="$(uclient-fetch -T 3 -O /dev/null \
 				"https://source.unsplash.com/collection/${collection_id}/1920x1080" 2>&1 |
 				grep -Eo "photo-\w+-\w+" | head -n1)"
 			[ -n "${pic_id}" ] && echo "https://images.unsplash.com/${pic_id}?fm=jpg&fit=crop&w=1920&h=1080"
 		else
-			wget -T3 -qO- \
+			uclient-fetch -T 3 -q -O - \
 				"https://api.unsplash.com/photos/random?client_id=${API_KEY}&collections=${collection_id}" |
 				jsonfilter -qe '@["urls"]["regular"]'
 		fi
 		;;
 	wallhaven)
-		wget -T3 -qO- \
+		uclient-fetch -T 3 -q -O - \
 			"https://wallhaven.cc/api/v1/search?resolutions=1920x1080&sorting=random" |
 			jsonfilter -qe "@.data[0].path"
 		;;
@@ -60,7 +60,7 @@ fetch_pic_url() {
 		local use_reso="resolutions"
 		[ "$EXACT_RESO" -eq "1" ] || use_reso="atleast"
 		[ -z "$API_KEY" ] || API_KEY="apikey=$API_KEY&"
-		wget -T3 -qO- \
+		uclient-fetch -T 3 -q -O - \
 			"https://wallhaven.cc/api/v1/search?${API_KEY}q=id%3A${tag_id}&${use_reso}=1920x1080&sorting=random" |
 			jsonfilter -qe '@.data[0].path'
 		;;
@@ -82,7 +82,7 @@ try_update() {
 			# NOTE: only happens to Wallhaven.cc source images
 			case "$WEB_PIC_SRC" in
 				wallhave*)
-					wget -T3 -qO- "${picurl}" > /dev/null
+					uclient-fetch -T 3 -q -O /dev/null "${picurl}"
 					;;
 			esac
 
