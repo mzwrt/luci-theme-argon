@@ -51,5 +51,102 @@
 	});
 </script>
 <script type="text/javascript">L.require('menu-argon')</script>
+<script>
+	(function () {
+		var body = document.body;
+		var temp = body.getAttribute('data-argon-temp');
+		if (!temp || body.getAttribute('data-page') !== 'admin-status-overview') return;
+
+		var injected = false;
+		var tempValueCell = null;
+		var pollInterval = null;
+
+		function formatTemp(raw) {
+			var val = parseInt(raw, 10);
+			if (isNaN(val) || val <= 0) return '';
+			if (val > 1000) return (val / 1000).toFixed(1) + '\u00b0C';
+			if (val <= 200) return val + '\u00b0C';
+			return '';
+		}
+
+		function refreshTemp() {
+			if (!tempValueCell) return;
+			var sessionId = (typeof L !== 'undefined' && L.env && L.env.sessionid)
+				? L.env.sessionid : null;
+			if (!sessionId) return;
+			fetch('/ubus', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					jsonrpc: '2.0',
+					id: 1,
+					method: 'call',
+					params: [sessionId, 'luci.argon_temp', 'get_temp', {}]
+				})
+			})
+			.then(function (r) { return r.json(); })
+			.then(function (data) {
+				if (data && data.result && data.result[0] === 0 &&
+						data.result[1] && data.result[1].temp) {
+					var formatted = formatTemp(data.result[1].temp);
+					if (formatted) tempValueCell.textContent = formatted;
+				}
+			})
+			.catch(function () {});
+		}
+
+		function injectTempRow() {
+			if (injected) return true;
+			var sections = document.querySelectorAll('#view .cbi-section');
+			if (!sections.length) return false;
+			var table = sections[0].querySelector('.table');
+			if (!table || !table.querySelector('.tr')) return false;
+
+			injected = true;
+
+			var row = document.createElement('div');
+			row.className = 'tr';
+
+			/* LuCI overview uses td elements with class "td" inside div.tr rows */
+			var labelCell = document.createElement('td');
+			labelCell.className = 'td left width-20';
+			labelCell.textContent = (typeof _ === 'function') ? _('Temperature') : 'Temperature';
+
+			tempValueCell = document.createElement('td');
+			tempValueCell.className = 'td';
+			tempValueCell.textContent = temp;
+
+			row.appendChild(labelCell);
+			row.appendChild(tempValueCell);
+			table.appendChild(row);
+
+			if (pollInterval) clearInterval(pollInterval);
+			pollInterval = setInterval(refreshTemp, 5000);
+			return true;
+		}
+
+		function observeView(view) {
+			var observer = new MutationObserver(function () {
+				if (injectTempRow()) observer.disconnect();
+			});
+			observer.observe(view, { childList: true, subtree: true });
+			injectTempRow();
+		}
+
+		var view = document.getElementById('view');
+		if (view) {
+			observeView(view);
+		} else {
+			var bodyObserver = new MutationObserver(function () {
+				var v = document.getElementById('view');
+				if (v) {
+					bodyObserver.disconnect();
+					observeView(v);
+				}
+			});
+			bodyObserver.observe(body, { childList: true });
+		}
+	})();
+</script>
 </body>
 </html>

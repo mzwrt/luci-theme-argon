@@ -1,0 +1,35 @@
+#!/bin/sh
+
+. /usr/share/libubox/jshn.sh
+
+case "$1" in
+"list")
+	json_init
+	json_add_object "get_temp"
+	json_close_object
+	json_dump
+	json_cleanup
+	;;
+"call")
+	case "$2" in
+	"get_temp")
+		read -r input
+		raw=""
+		for path in \
+			/sys/class/thermal/thermal_zone0/temp \
+			/sys/class/thermal/thermal_zone1/temp \
+			/sys/class/hwmon/hwmon0/temp1_input \
+			/sys/class/hwmon/hwmon1/temp1_input; do
+			if [ -f "$path" ]; then
+				raw=$(cat "$path" 2>/dev/null)
+				[ -n "$raw" ] && break
+			fi
+		done
+		json_init
+		json_add_string "temp" "${raw:-}"
+		json_dump
+		json_cleanup
+		;;
+	esac
+	;;
+esac
