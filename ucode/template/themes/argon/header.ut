@@ -45,6 +45,31 @@
 		bar_color = (mode == 'dark') ? dark_primary : primary;
 	}
 
+	// Read CPU/system temperature from sysfs thermal zones
+	let temp = null;
+	const temp_paths = [
+		'/sys/class/thermal/thermal_zone0/temp',
+		'/sys/class/thermal/thermal_zone1/temp',
+		'/sys/class/hwmon/hwmon0/temp1_input',
+		'/sys/class/hwmon/hwmon1/temp1_input',
+	];
+	const temp_paths_len = length(temp_paths);
+	for (let i = 0; i < temp_paths_len && temp === null; i++) {
+		if (access(temp_paths[i])) {
+			const raw = readfile(temp_paths[i]);
+			if (raw) {
+				const val = int(trim(raw));
+				if (val > 1000) {
+					// millidegrees Celsius (standard for thermal_zone)
+					temp = sprintf('%.1f°C', val / 1000.0);
+				} else if (val > 0 && val <= 200) {
+					// already in degrees Celsius
+					temp = sprintf('%d°C', val);
+				}
+			}
+		}
+	}
+
 -%}
 <!DOCTYPE html>
 <html lang="{{ dispatcher.lang }}">
@@ -151,7 +176,7 @@
 							<a class="showSide"></a>
 							<a class="brand" href="#">{{ hostname }}</a>
 						</div>
-						<div class="status" id="indicators"></div>
+						<div class="status" id="indicators">{% if (temp): %}<span class="temp-info" data-style="inactive">{{ temp }}</span>{% endif %}</div>
 					</div>
 				</div>
 			</header>
